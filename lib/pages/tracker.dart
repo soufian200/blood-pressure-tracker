@@ -2,7 +2,7 @@ import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_button.dart';
 import 'package:bptracker/widgets/app_card.dart';
 import 'package:bptracker/widgets/app_title.dart';
-import 'package:bptracker/widgets/bar_char.dart';
+import 'package:bptracker/widgets/sys_dia_bar_char.dart';
 import 'package:bptracker/widgets/label.dart';
 import 'package:bptracker/widgets/scroll_glow.dart';
 import 'package:bptracker/widgets/sys_dia_record.dart';
@@ -78,9 +78,9 @@ class _TrackerState extends State<Tracker> {
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: SizedBox(
-                              width: 60 * 30,
+                              width: 70.w * 30,
                               height: 200.h,
-                              child: const AppBarChar()),
+                              child: const SysDiaBarChar()),
                         ),
                         SizedBox(height: 10.h),
                         Row(

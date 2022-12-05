@@ -4,33 +4,52 @@ import 'package:bptracker/widgets/app_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class SysDiaRecord extends StatelessWidget {
-  const SysDiaRecord({
+class PulseRecord extends StatelessWidget {
+  PulseRecord({
     Key? key,
+    required this.date,
+    required this.title,
+    required this.pulse,
   }) : super(key: key);
+
+  String date;
+  String title;
+  int pulse;
 
   @override
   Widget build(BuildContext context) {
     return AppCard(
         child: SizedBox(
-      height: 100.h,
+      height: 60.h,
       child: Row(
         children: [
           Container(
             // color: Colors.red,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("50",
-                    style: TextStyle(
-                        fontSize: 42.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black.withOpacity(.8))),
-                Text("52",
-                    style: TextStyle(
-                        fontSize: 42.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black.withOpacity(.8))),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.favorite,
+                      size: 16.sp,
+                      color: Colors.red,
+                    ),
+                    SizedBox(width: 1.w),
+                    AppTitle(
+                      txt: "BPM",
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black.withOpacity(.8),
+                    ),
+                  ],
+                ),
+                AppTitle(
+                  txt: pulse.toString(),
+                  fontSize: 48.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black.withOpacity(.8),
+                ),
               ],
             ),
           ),
@@ -47,22 +66,16 @@ class SysDiaRecord extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("10:12 - 12/13/2022",
+                  Text(date,
                       style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w300,
                           color: AppColors.primary)),
                   AppTitle(
-                    txt: "Blood Pressure Tracker",
-                    fontSize: 25.sp,
+                    txt: title,
+                    fontSize: 30.sp,
                     color: Colors.black.withOpacity(.8),
                     fontWeight: FontWeight.bold,
-                  ),
-                  SizedBox(height: 14.h),
-                  AppTitle(
-                    txt: "Pulse: 20 BPM",
-                    fontSize: 17.sp,
-                    color: Colors.black.withOpacity(.5),
                   ),
                 ],
               ),

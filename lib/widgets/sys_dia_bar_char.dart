@@ -2,10 +2,10 @@ import 'package:bptracker/models/sys_dia_stats.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
-class AppBarChar extends StatelessWidget {
+class SysDiaBarChar extends StatelessWidget {
   // List<charts.Series> seriesList;
 
-  const AppBarChar();
+  const SysDiaBarChar();
 
   /// Create series list with multiple series
   static List<charts.Series<SysDiaStats, String>> _createSampleData() {

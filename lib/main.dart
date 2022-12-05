@@ -1,4 +1,4 @@
-import 'package:bptracker/pages/tracker.dart';
+import 'package:bptracker/pages/heart_rate.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
@@ -18,7 +18,7 @@ void main() {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         getPages: [
-          GetPage(name: "/", page: () => const Tracker()),
+          GetPage(name: "/", page: () => const HeartRate()),
         ],
       );
     },
