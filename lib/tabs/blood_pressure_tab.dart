@@ -3,43 +3,44 @@ import 'package:bptracker/widgets/app_button.dart';
 import 'package:bptracker/widgets/app_card.dart';
 import 'package:bptracker/widgets/app_container.dart';
 import 'package:bptracker/widgets/app_title.dart';
-import 'package:bptracker/widgets/publse_bar_char.dart';
 import 'package:bptracker/widgets/label.dart';
-import 'package:bptracker/widgets/pulse_record.dart';
+import 'package:bptracker/widgets/sys_dia_bar_char.dart';
+import 'package:bptracker/widgets/sys_dia_record.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HeartRateTab extends StatefulWidget {
-  const HeartRateTab({Key? key}) : super(key: key);
+class BloodPressureTab extends StatefulWidget {
+  const BloodPressureTab({Key? key}) : super(key: key);
 
   @override
-  State<HeartRateTab> createState() => _HeartRateTabState();
+  State<BloodPressureTab> createState() => _BloodPressureTabState();
 }
 
-class _HeartRateTabState extends State<HeartRateTab> {
+class _BloodPressureTabState extends State<BloodPressureTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: AppContainer(
-        child: Column(children: [
+          child: Column(
+        children: [
           SizedBox(height: 20.sp),
           AppCard(
             child: Column(children: [
               Label(
-                title: "Average",
-                subtitle: "BMP",
+                title: "Systolic",
+                subtitle: "mmHg",
                 number: 55,
               ),
               SizedBox(height: 17.h),
               Label(
-                title: "Max",
-                subtitle: "BMP",
+                title: "Diastolic",
+                subtitle: "mmHg",
                 number: 55,
                 numberColor: Colors.blueAccent,
               ),
               SizedBox(height: 17.h),
               Label(
-                title: "Min",
+                title: "Pulse",
                 subtitle: "BMP",
                 number: 55,
                 numberColor: Colors.green,
@@ -64,9 +65,9 @@ class _HeartRateTabState extends State<HeartRateTab> {
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: SizedBox(
-                      width: 56.w * 30,
+                      width: 70.w * 30,
                       height: 200.h,
-                      child: const PulseBarChar()),
+                      child: const SysDiaBarChar()),
                 ),
                 SizedBox(height: 10.h),
                 Row(
@@ -76,10 +77,22 @@ class _HeartRateTabState extends State<HeartRateTab> {
                         Container(
                           width: 10.r,
                           height: 10.r,
-                          color: AppColors.pulse,
+                          color: AppColors.systolic,
                         ),
                         SizedBox(width: 5.w),
-                        const Text("Pulse")
+                        const Text("Systolic")
+                      ],
+                    ),
+                    SizedBox(width: 20.w),
+                    Row(
+                      children: [
+                        Container(
+                          width: 10.r,
+                          height: 10.r,
+                          color: AppColors.diastolic,
+                        ),
+                        SizedBox(width: 5.w),
+                        const Text("Diastolic")
                       ],
                     ),
                   ],
@@ -101,30 +114,23 @@ class _HeartRateTabState extends State<HeartRateTab> {
           SizedBox(height: 10.sp),
           Column(
             children: [
-              PulseRecord(
-                date: "10:12 - 12/13/2022",
-                title: "Normal",
-                pulse: 54,
-              ),
+              const SysDiaRecord(),
               SizedBox(height: 10.h),
-              PulseRecord(
-                date: "10:12 - 11/13/2022",
-                title: "normal",
-                pulse: 52,
-              ),
+              const SysDiaRecord(),
               SizedBox(height: 10.h),
-              PulseRecord(
-                date: "10:12 - 12/03/2022",
-                title: "normal",
-                pulse: 62,
-              ),
+              const SysDiaRecord(),
+              SizedBox(height: 10.h),
+              const SysDiaRecord(),
+              SizedBox(height: 10.h),
             ],
           ),
           SizedBox(height: 10.sp),
-          AppButton(label: "See All History"),
+          AppButton(
+            label: "See All History",
+          ),
           SizedBox(height: 100.sp),
-        ]),
-      ),
+        ],
+      )),
       floatingActionButton: FloatingActionButton(
         elevation: 3,
         backgroundColor: AppColors.primary,
@@ -133,7 +139,7 @@ class _HeartRateTabState extends State<HeartRateTab> {
           size: 25.sp,
         ),
         onPressed: () {
-          print("Add Heart Rate");
+          print("Add blood pressure");
         },
       ),
     );

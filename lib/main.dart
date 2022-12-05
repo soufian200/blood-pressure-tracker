@@ -1,3 +1,4 @@
+import 'package:bptracker/pages/tracker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
@@ -12,12 +13,12 @@ void main() {
     minTextAdapt: true,
     splitScreenMode: true,
     builder: (context, widget) {
-      return const GetMaterialApp(
+      return GetMaterialApp(
         title: "Blood Pressure Tracker",
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         getPages: [
-          // GetPage(name: "/", page: () => const Tracker()),
+          GetPage(name: "/", page: () => const Tracker()),
         ],
       );
     },
