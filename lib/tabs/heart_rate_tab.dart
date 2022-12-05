@@ -9,14 +9,14 @@ import 'package:bptracker/widgets/pulse_record.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HeartRate extends StatefulWidget {
-  const HeartRate({Key? key}) : super(key: key);
+class HeartRateTab extends StatefulWidget {
+  const HeartRateTab({Key? key}) : super(key: key);
 
   @override
-  State<HeartRate> createState() => _HeartRateState();
+  State<HeartRateTab> createState() => _HeartRateTabState();
 }
 
-class _HeartRateState extends State<HeartRate> {
+class _HeartRateTabState extends State<HeartRateTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
