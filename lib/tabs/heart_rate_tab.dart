@@ -3,8 +3,8 @@ import 'package:bptracker/widgets/app_button.dart';
 import 'package:bptracker/widgets/app_card.dart';
 import 'package:bptracker/widgets/app_container.dart';
 import 'package:bptracker/widgets/app_title.dart';
-import 'package:bptracker/widgets/publse_bar_char.dart';
 import 'package:bptracker/widgets/label.dart';
+import 'package:bptracker/widgets/publse_bar_char.dart';
 import 'package:bptracker/widgets/pulse_record.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -61,13 +61,7 @@ class _HeartRateTabState extends State<HeartRateTab> {
           AppCard(
             child: Column(
               children: [
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                      width: 56.w * 30,
-                      height: 200.h,
-                      child: const PulseBarChar()),
-                ),
+                PulseBarChar(),
                 SizedBox(height: 10.h),
                 Row(
                   children: [

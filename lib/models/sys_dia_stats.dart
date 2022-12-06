@@ -1,6 +1,7 @@
 class SysDiaStats {
   final String date;
-  final int count;
+  final int sys;
+  final int dia;
 
-  SysDiaStats(this.date, this.count);
+  SysDiaStats(this.date, this.sys, this.dia);
 }
