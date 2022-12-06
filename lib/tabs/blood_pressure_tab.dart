@@ -8,6 +8,8 @@ import 'package:bptracker/widgets/sys_dia_bar_char.dart';
 import 'package:bptracker/widgets/sys_dia_record.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/route_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BloodPressureTab extends StatefulWidget {
   const BloodPressureTab({Key? key}) : super(key: key);
@@ -17,6 +19,19 @@ class BloodPressureTab extends StatefulWidget {
 }
 
 class _BloodPressureTabState extends State<BloodPressureTab> {
+  ///
+  void _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    Set keys = prefs.getKeys();
+    print("Keys: ${keys.toList()}");
+  }
+
+  @override
+  void initState() {
+    _loadData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,6 +142,9 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
           SizedBox(height: 10.sp),
           AppButton(
             label: "See All History",
+            onTap: () {
+              print("See all history");
+            },
           ),
           SizedBox(height: 100.sp),
         ],
@@ -139,7 +157,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
           size: 25.sp,
         ),
         onPressed: () {
-          print("Add blood pressure");
+          Get.toNamed("/pressure_record");
         },
       ),
     );

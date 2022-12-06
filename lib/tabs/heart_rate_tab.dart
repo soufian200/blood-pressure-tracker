@@ -121,7 +121,12 @@ class _HeartRateTabState extends State<HeartRateTab> {
             ],
           ),
           SizedBox(height: 10.sp),
-          AppButton(label: "See All History"),
+          AppButton(
+            label: "See All History",
+            onTap: () {
+              print("See all history...");
+            },
+          ),
           SizedBox(height: 100.sp),
         ]),
       ),

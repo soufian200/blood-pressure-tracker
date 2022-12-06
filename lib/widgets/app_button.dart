@@ -7,12 +7,16 @@ class AppButton extends StatelessWidget {
   AppButton({
     Key? key,
     required this.label,
+    required this.onTap,
     this.bg = AppColors.primary,
+    this.height = 60,
     this.color = Colors.white,
   }) : super(key: key);
 
   String label;
+  Function() onTap;
   Color bg;
+  double height;
   Color color;
 
   @override
@@ -22,11 +26,9 @@ class AppButton extends StatelessWidget {
           splashColor: Colors.transparent,
           highlightColor: Colors.black.withOpacity(.4),
           borderRadius: BorderRadius.circular(40.r),
-          onTap: () {
-            print("hello");
-          },
+          onTap: onTap,
           child: Ink(
-            height: 60.h,
+            height: height * 1.h,
             decoration: BoxDecoration(
                 color: bg, borderRadius: BorderRadius.circular(40.r)),
             child: Center(
