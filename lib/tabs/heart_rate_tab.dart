@@ -24,26 +24,26 @@ class _HeartRateTabState extends State<HeartRateTab> {
         child: Column(children: [
           SizedBox(height: 20.sp),
           AppCard(
-            child: Column(children: [
-              Label(
-                title: "Average",
-                subtitle: "BMP",
-                number: 55,
-              ),
-              SizedBox(height: 17.h),
-              Label(
-                title: "Max",
-                subtitle: "BMP",
-                number: 55,
-                numberColor: Colors.blueAccent,
-              ),
-              SizedBox(height: 17.h),
-              Label(
-                title: "Min",
-                subtitle: "BMP",
-                number: 55,
-                numberColor: Colors.green,
-              ),
+            child: Column(children: const [
+              // Label(
+              //   title: "Average",
+              //   subtitle: "BMP",
+              //   number: 55,
+              // ),
+              // SizedBox(height: 17.h),
+              // Label(
+              //   title: "Max",
+              //   subtitle: "BMP",
+              //   number: 55,
+              //   numberColor: Colors.blueAccent,
+              // ),
+              // SizedBox(height: 17.h),
+              // Label(
+              //   title: "Min",
+              //   subtitle: "BMP",
+              //   number: 55,
+              //   numberColor: Colors.green,
+              // ),
             ]),
           ),
           SizedBox(height: 20.sp),

@@ -6,14 +6,14 @@ class Label extends StatelessWidget {
     Key? key,
     required this.title,
     required this.subtitle,
-    required this.number,
-    this.numberColor = Colors.orange,
+    required this.stats,
+    this.color = Colors.orange,
   }) : super(key: key);
 
   String title;
   String subtitle;
-  int number;
-  Color numberColor;
+  Map<String, int> stats;
+  Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +40,35 @@ class Label extends StatelessWidget {
             ],
           ),
         ),
-        Text(
-          number.toString(),
-          style: TextStyle(fontSize: 50.sp, color: numberColor),
+        Row(
+          children: [
+            SizedBox(
+              width: 60.w,
+              child: Center(
+                child: Text(
+                  stats['max'].toString(),
+                  style: TextStyle(
+                      fontSize: 34.sp,
+                      color: color,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            SizedBox(width: 15.w),
+            SizedBox(
+              // color: Colors.red,
+              width: 60.w,
+              child: Center(
+                child: Text(
+                  stats["min"].toString(),
+                  style: TextStyle(
+                      fontSize: 34.sp,
+                      color: color,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

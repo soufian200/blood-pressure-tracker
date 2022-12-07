@@ -26,6 +26,11 @@ class BloodPressureTab extends StatefulWidget {
 class _BloodPressureTabState extends State<BloodPressureTab> {
   List<PressureRecordModel> latest = [];
   List<SysDiaStats> sysDiaBarCharData = [];
+  final Map<String, dynamic> _stats = {
+    "sys": {"max": 0, "min": 0},
+    "dia": {"max": 0, "min": 0},
+    "pulse": {"max": 0, "min": 0}
+  };
 
   ///
   void _loadLatestData() async {
@@ -48,8 +53,8 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
         mData.entries.toList()..sort((e1, e2) => e2.key.compareTo(e1.key)));
     int maxLatest = 5;
     int lenLatest = mDataSorted.values.toList().length;
-    List<PressureRecordModel> latestData = mDataSorted.values
-        .toList()
+    List moList = await _getMonthList();
+    List<PressureRecordModel> latestData = moList
         .sublist(0, lenLatest > maxLatest ? maxLatest : lenLatest)
         .map((decodedContext) {
       return PressureRecordModel(
@@ -63,6 +68,71 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
     }).toList();
     setState(() {
       latest = latestData;
+    });
+  }
+
+  Future<List> _getMonthList() async {
+    final prefs = await SharedPreferences.getInstance();
+    String y = DateTime.now().year.toString();
+    String mo = DateTime.now().month.toString();
+    String? yData = prefs.getString(y);
+    if (yData == null) {
+      print("no record for this year($y)");
+      return [];
+    }
+
+    Map yDataDecoded = json.decode(yData);
+    Map? mData = yDataDecoded[mo];
+    if (mData == null) {
+      print("no record for this month($mo)");
+      return [];
+    }
+
+    Map mDataSorted = Map.fromEntries(
+        mData.entries.toList()..sort((e1, e2) => e2.key.compareTo(e1.key)));
+    List dd = mDataSorted.values.toList();
+
+    return dd;
+  }
+
+  ///
+  void _loadMonthStats() async {
+    var allMonthData = await _getMonthList();
+    int sMax = allMonthData[0]["sys"];
+    int sMin = allMonthData[0]["sys"];
+    int dMax = allMonthData[0]["dia"];
+    int dMin = allMonthData[0]["dia"];
+    int pMax = allMonthData[0]["pulse"];
+    int pMin = allMonthData[0]["pulse"];
+    for (var decodedContext in allMonthData) {
+      int sVal = decodedContext["sys"];
+      int dVal = decodedContext["dia"];
+      int pVal = decodedContext["pulse"];
+
+      if (sVal > sMax) {
+        sMax = sVal;
+      } else if (sVal < sMin) {
+        sMin = sVal;
+      }
+      if (dVal > dMax) {
+        dMax = dVal;
+      } else if (dVal < dMin) {
+        dMin = dVal;
+      }
+      if (pVal > pMax) {
+        pMax = pVal;
+      } else if (pVal < pMin) {
+        pMin = pVal;
+      }
+    }
+
+    setState(() {
+      _stats["sys"]["max"] = sMax;
+      _stats["sys"]["min"] = sMin;
+      _stats["dia"]["max"] = dMax;
+      _stats["dia"]["min"] = dMin;
+      _stats["pulse"]["max"] = pMax;
+      _stats["pulse"]["min"] = pMin;
     });
   }
 
@@ -89,6 +159,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
           data["sys"],
           data["dia"]);
     }).toList();
+
     setState(() {
       sysDiaBarCharData = sysDiaBarCharDataClean;
     });
@@ -96,6 +167,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
 
   @override
   void initState() {
+    _loadMonthStats();
     _loadMonthData();
     _loadLatestData();
     super.initState();
@@ -108,30 +180,6 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
           child: Column(
         children: [
           SizedBox(height: 20.sp),
-          AppCard(
-            child: Column(children: [
-              Label(
-                title: "Systolic",
-                subtitle: "mmHg",
-                number: 55,
-              ),
-              SizedBox(height: 17.h),
-              Label(
-                title: "Diastolic",
-                subtitle: "mmHg",
-                number: 55,
-                numberColor: Colors.blueAccent,
-              ),
-              SizedBox(height: 17.h),
-              Label(
-                title: "Pulse",
-                subtitle: "BMP",
-                number: 55,
-                numberColor: Colors.green,
-              ),
-            ]),
-          ),
-          SizedBox(height: 20.sp),
           Row(
             children: [
               AppTitle(
@@ -143,6 +191,82 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
             ],
           ),
           SizedBox(height: 10.sp),
+          AppCard(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 60.w,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                              width: 1.h, color: Colors.grey.withOpacity(.3)),
+                        ),
+                      ),
+                      child: Center(
+                        child: AppTitle(
+                          txt: "Max",
+                          fontSize: 25.sp,
+                          color: Colors.black.withOpacity(.6),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 15.w),
+                    Container(
+                      width: 60.w,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                              width: 1.h, color: Colors.grey.withOpacity(.3)),
+                        ),
+                      ),
+                      child: Center(
+                        child: AppTitle(
+                          txt: "Min",
+                          fontSize: 25.sp,
+                          color: Colors.black.withOpacity(.6),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(children: [
+                  Label(
+                    title: "Systolic",
+                    subtitle: "mmHg",
+                    color: AppColors.systolic,
+                    stats: {
+                      "min": _stats["sys"]["min"],
+                      "max": _stats["sys"]["max"]
+                    },
+                  ),
+                  SizedBox(height: 17.h),
+                  Label(
+                    title: "Diastolic",
+                    subtitle: "mmHg",
+                    color: AppColors.diastolic,
+                    stats: {
+                      "min": _stats["dia"]["min"],
+                      "max": _stats["dia"]["max"]
+                    },
+                  ),
+                  SizedBox(height: 17.h),
+                  Label(
+                    title: "Pulse",
+                    subtitle: "BMP",
+                    color: AppColors.pulse,
+                    stats: {
+                      "min": _stats["pulse"]["min"],
+                      "max": _stats["pulse"]["max"]
+                    },
+                  ),
+                ]),
+              ],
+            ),
+          ),
+          SizedBox(height: 20.sp),
           AppCard(
             child: Column(
               children: [
