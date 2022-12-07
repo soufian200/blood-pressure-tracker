@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bptracker/Methods/get_sys_dia_status.dart';
 import 'package:bptracker/models/bp_status.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_button.dart';
@@ -19,29 +20,6 @@ class PressureRecord extends StatefulWidget {
   State<PressureRecord> createState() => _PressureRecordState();
 }
 
-List<BPStatus> _bpStatus = [
-  BPStatus(
-      label: "Normal Blood Pressure",
-      color: AppColors.normal,
-      msg: "SYS < 120 and DIA < 80"),
-  BPStatus(
-      label: "Elevated Blood Pressure",
-      color: AppColors.elevated,
-      msg: "SYS < 120-129 and DIA < 80"),
-  BPStatus(
-      label: "High Blood Pressure - Stage 1",
-      color: AppColors.hts1,
-      msg: "SYS < 130-139 and DIA < 80-89"),
-  BPStatus(
-      label: "High Blood Pressure - Stage 2",
-      color: AppColors.hts2,
-      msg: "SYS > 140-129 and DIA > 90"),
-  BPStatus(
-      label: "High Blood Pressure - Stage 3",
-      color: AppColors.hts3,
-      msg: "SYS > 180 and/or DIA > 120"),
-];
-
 class _PressureRecordState extends State<PressureRecord> {
   ///
   int _sysVal = 70;
@@ -53,7 +31,7 @@ class _PressureRecordState extends State<PressureRecord> {
       TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
   final TextEditingController _noteController = TextEditingController();
 
-  BPStatus _crrbpStatus = _bpStatus[0];
+  BPStatus _crrbpStatus = getSysDiaStatus(70, 40);
 
   ///
   void updatePulseVal() {
@@ -67,17 +45,7 @@ class _PressureRecordState extends State<PressureRecord> {
   ///
   void observeCrrStatus() {
     setState(() {
-      if (_sysVal <= 120 && _diaVal <= 80) {
-        _crrbpStatus = _bpStatus[0];
-      } else if (_sysVal <= 129 && _diaVal <= 80) {
-        _crrbpStatus = _bpStatus[1];
-      } else if (_sysVal <= 140 && _diaVal <= 90) {
-        _crrbpStatus = _bpStatus[2];
-      } else if (_sysVal <= 180 && _diaVal <= 120) {
-        _crrbpStatus = _bpStatus[3];
-      } else if (_sysVal <= 190 && _diaVal <= 180) {
-        _crrbpStatus = _bpStatus[4];
-      }
+      _crrbpStatus = getSysDiaStatus(_sysVal, _diaVal);
     });
   }
 
@@ -98,7 +66,7 @@ class _PressureRecordState extends State<PressureRecord> {
   ///
   void savePressureRecord() async {
     String key =
-        "${_date.day}/${_date.month}/${_date.year}-${_time.hour}:${_time.minute}";
+        "${_date.day}/${_date.month}/${_date.year} - ${_time.hour}:${_time.minute}";
     Map context = {
       "sys": _sysVal,
       "dia": _diaVal,
@@ -339,7 +307,7 @@ class _PressureRecordState extends State<PressureRecord> {
                       )),
                       value: _pulseVal,
                       minValue: 20,
-                      maxValue: 100,
+                      maxValue: 200,
                       selectedTextStyle: TextStyle(
                         fontSize: 40.sp,
                         fontWeight: FontWeight.bold,

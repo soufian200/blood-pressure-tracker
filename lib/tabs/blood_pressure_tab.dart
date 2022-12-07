@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:bptracker/models/pressure_record_model.dart';
+// import 'package:bptracker/pages/pressure_record.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_button.dart';
 import 'package:bptracker/widgets/app_card.dart';
@@ -64,11 +68,46 @@ class _IconWidgetState extends AnimatedWidgetBaseState<_IconWidget> {
 }
 
 class _BloodPressureTabState extends State<BloodPressureTab> {
+  List<PressureRecordModel> latest = [];
+
   ///
   void _loadData() async {
     final prefs = await SharedPreferences.getInstance();
-    Set keys = prefs.getKeys();
-    print("Keys: ${keys.toList()}");
+    // prefs.clear();
+    List<String> keys = prefs.getKeys().toList();
+    keys.sort();
+    // print("===================");
+    // print(keys);
+    List<String> latestKeys = [];
+    int k = 5;
+
+    if (keys.length > k) {
+      while (k != 0) {
+        latestKeys.add(keys[keys.length - k % keys.length]);
+        k--;
+      }
+    } else {
+      latestKeys = keys;
+    }
+
+    List<PressureRecordModel> latestData =
+        latestKeys.reversed.toList().map((key) {
+      String context = prefs.getString(key) ?? "";
+      Map decodedContext = json.decode(context);
+      return PressureRecordModel(
+        date: key,
+        dateTime: decodedContext["date_time"],
+        // title: decodedContext["title"],
+        note: decodedContext["note"],
+        sys: decodedContext["sys"],
+        dia: decodedContext["dia"],
+        pulse: decodedContext["pulse"],
+      );
+    }).toList();
+
+    setState(() {
+      latest = latestData;
+    });
   }
 
   @override
@@ -170,18 +209,31 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
             ],
           ),
           SizedBox(height: 10.sp),
-          Column(
-            children: [
-              const SysDiaRecord(),
-              SizedBox(height: 10.h),
-              const SysDiaRecord(),
-              SizedBox(height: 10.h),
-              const SysDiaRecord(),
-              SizedBox(height: 10.h),
-              const SysDiaRecord(),
-              SizedBox(height: 10.h),
-            ],
-          ),
+          latest.isEmpty
+              ? Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10.r))),
+                  height: 100.h,
+                  child: Center(
+                    child: AppTitle(
+                      txt: "No Records",
+                      color: Colors.grey,
+                    ),
+                  ),
+                )
+              : Column(
+                  children: [
+                    ...latest
+                        .map((record) => Container(
+                              margin: EdgeInsets.only(bottom: 10.h),
+                              child: SysDiaRecord(
+                                pressureRecord: record,
+                              ),
+                            ))
+                        .toList()
+                  ],
+                ),
           SizedBox(height: 10.sp),
           AppButton(
             label: "See All History",
