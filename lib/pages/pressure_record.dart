@@ -65,13 +65,16 @@ class _PressureRecordState extends State<PressureRecord> {
 
   ///
   void savePressureRecord() async {
-    String key =
+    String dateTimeStr =
         "${_date.day}/${_date.month}/${_date.year} - ${_time.hour}:${_time.minute}";
-    Map context = {
+    String y = DateTime.now().year.toString();
+    String mo = DateTime.now().month.toString();
+    Map dayContext = {
       "sys": _sysVal,
       "dia": _diaVal,
       "pulse": _pulseVal,
       "note": _noteController.text,
+      "date_time_str": dateTimeStr,
       "date_time": {
         "year": _date.year,
         "month": _date.month,
@@ -80,13 +83,30 @@ class _PressureRecordState extends State<PressureRecord> {
         "min": _time.minute,
       },
     };
+    Map context = {
+      mo: {dateTimeStr: dayContext}
+    };
+
     print("=================");
-    String encodedContext = json.encode(context);
-    print(encodedContext);
 
     /// Store in Local Storage
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(key, encodedContext);
+
+    String? yData = prefs.getString(y);
+    if (yData != null) {
+      Map yDataDecoded = json.decode(yData);
+      Map mData = yDataDecoded[mo];
+      mData[dateTimeStr] = dayContext;
+      yDataDecoded[mo] = mData;
+
+      String newEncodedContext = json.encode(yDataDecoded);
+      // print(newEncodedContext);
+      prefs.setString(y, newEncodedContext);
+    } else {
+      String encodedContext = json.encode(context);
+      prefs.setString(y, encodedContext);
+    }
+    // print(encodedContext);
 
     /// Return Back
     Get.back();

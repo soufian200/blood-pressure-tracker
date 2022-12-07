@@ -71,48 +71,87 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
   List<PressureRecordModel> latest = [];
 
   ///
-  void _loadData() async {
+  void _loadLatestData() async {
     final prefs = await SharedPreferences.getInstance();
     // prefs.clear();
-    List<String> keys = prefs.getKeys().toList();
-    keys.sort();
-    // print("===================");
-    // print(keys);
-    List<String> latestKeys = [];
-    int k = 5;
-
-    if (keys.length > k) {
-      while (k != 0) {
-        latestKeys.add(keys[keys.length - k % keys.length]);
-        k--;
-      }
-    } else {
-      latestKeys = keys;
+    String y = DateTime.now().year.toString();
+    String mo = DateTime.now().month.toString();
+    String? yData = prefs.getString(y);
+    if (yData == null) {
+      print("no record for this year($y)");
+      return;
+    }
+    Map yDataDecoded = json.decode(yData);
+    Map? mData = yDataDecoded[mo];
+    if (mData == null) {
+      print("no record for this month($mo)");
+      return;
     }
 
-    List<PressureRecordModel> latestData =
-        latestKeys.reversed.toList().map((key) {
-      String context = prefs.getString(key) ?? "";
-      Map decodedContext = json.decode(context);
+    Map mDataSorted = Map.fromEntries(
+        mData.entries.toList()..sort((e1, e2) => e2.key.compareTo(e1.key)));
+    int maxLatest = 5;
+    int lenLatest = mDataSorted.values.toList().length;
+    List<PressureRecordModel> latestData = mDataSorted.values
+        .toList()
+        .sublist(0, lenLatest > maxLatest ? maxLatest : lenLatest)
+        .map((decodedContext) {
       return PressureRecordModel(
-        date: key,
+        date: decodedContext["date_time_str"] ?? "",
         dateTime: decodedContext["date_time"],
-        // title: decodedContext["title"],
         note: decodedContext["note"],
         sys: decodedContext["sys"],
         dia: decodedContext["dia"],
         pulse: decodedContext["pulse"],
       );
     }).toList();
-
     setState(() {
       latest = latestData;
     });
+    return;
+
+    // List<String> keys = prefs.getKeys().toList();
+    // keys.sort();
+
+    // List<String> latestKeys = [];
+    // int k = 5;
+    // if (keys.length > k) {
+    //   while (k != 0) {
+    //     latestKeys.add(keys[keys.length - k % keys.length]);
+    //     k--;
+    //   }
+    // } else {
+    //   latestKeys = keys;
+    // }
+
+    // List<PressureRecordModel> latestData =
+    //     latestKeys.reversed.toList().map((key) {
+    //   String context = prefs.getString(key) ?? "";
+    //   Map decodedContext = json.decode(context);
+    //   return PressureRecordModel(
+    //     date: key,
+    //     dateTime: decodedContext["date_time"],
+    //     note: decodedContext["note"],
+    //     sys: decodedContext["sys"],
+    //     dia: decodedContext["dia"],
+    //     pulse: decodedContext["pulse"],
+    //   );
+    // }).toList();
+
+    // setState(() {
+    //   latest = latestData;
+    // });
+  }
+
+  /// Load This Month Data
+  _loadMonthData() {
+    print(DateTime.now().month);
   }
 
   @override
   void initState() {
-    _loadData();
+    // _loadMonthData();
+    _loadLatestData();
     super.initState();
   }
 
