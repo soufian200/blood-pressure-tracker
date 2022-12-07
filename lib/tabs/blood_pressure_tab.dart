@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bptracker/models/pressure_record_model.dart';
+import 'package:bptracker/models/sys_dia_stats.dart';
 // import 'package:bptracker/pages/pressure_record.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_button.dart';
@@ -14,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:math' as math;
 
 class BloodPressureTab extends StatefulWidget {
   const BloodPressureTab({Key? key}) : super(key: key);
@@ -23,57 +23,13 @@ class BloodPressureTab extends StatefulWidget {
   State<BloodPressureTab> createState() => _BloodPressureTabState();
 }
 
-class _IconWidget extends ImplicitlyAnimatedWidget {
-  const _IconWidget({
-    required this.color,
-    required this.isSelected,
-  }) : super(duration: const Duration(milliseconds: 300));
-  final Color color;
-  final bool isSelected;
-
-  @override
-  ImplicitlyAnimatedWidgetState<ImplicitlyAnimatedWidget> createState() =>
-      _IconWidgetState();
-}
-
-class _IconWidgetState extends AnimatedWidgetBaseState<_IconWidget> {
-  Tween<double>? _rotationTween;
-
-  @override
-  Widget build(BuildContext context) {
-    final rotation = math.pi * 4 * _rotationTween!.evaluate(animation);
-    final scale = 1 + _rotationTween!.evaluate(animation) * 0.5;
-    return Transform(
-      transform: Matrix4.rotationZ(rotation).scaled(scale, scale),
-      origin: const Offset(14, 14),
-      child: Icon(
-        widget.isSelected ? Icons.face_retouching_natural : Icons.face,
-        color: widget.color,
-        size: 28,
-      ),
-    );
-  }
-
-  @override
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    _rotationTween = visitor(
-      _rotationTween,
-      widget.isSelected ? 1.0 : 0.0,
-      (dynamic value) => Tween<double>(
-        begin: value as double,
-        end: widget.isSelected ? 1.0 : 0.0,
-      ),
-    ) as Tween<double>?;
-  }
-}
-
 class _BloodPressureTabState extends State<BloodPressureTab> {
   List<PressureRecordModel> latest = [];
+  List<SysDiaStats> sysDiaBarCharData = [];
 
   ///
   void _loadLatestData() async {
     final prefs = await SharedPreferences.getInstance();
-    // prefs.clear();
     String y = DateTime.now().year.toString();
     String mo = DateTime.now().month.toString();
     String? yData = prefs.getString(y);
@@ -108,49 +64,39 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
     setState(() {
       latest = latestData;
     });
-    return;
-
-    // List<String> keys = prefs.getKeys().toList();
-    // keys.sort();
-
-    // List<String> latestKeys = [];
-    // int k = 5;
-    // if (keys.length > k) {
-    //   while (k != 0) {
-    //     latestKeys.add(keys[keys.length - k % keys.length]);
-    //     k--;
-    //   }
-    // } else {
-    //   latestKeys = keys;
-    // }
-
-    // List<PressureRecordModel> latestData =
-    //     latestKeys.reversed.toList().map((key) {
-    //   String context = prefs.getString(key) ?? "";
-    //   Map decodedContext = json.decode(context);
-    //   return PressureRecordModel(
-    //     date: key,
-    //     dateTime: decodedContext["date_time"],
-    //     note: decodedContext["note"],
-    //     sys: decodedContext["sys"],
-    //     dia: decodedContext["dia"],
-    //     pulse: decodedContext["pulse"],
-    //   );
-    // }).toList();
-
-    // setState(() {
-    //   latest = latestData;
-    // });
   }
 
   /// Load This Month Data
-  _loadMonthData() {
-    print(DateTime.now().month);
+  _loadMonthData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String y = DateTime.now().year.toString();
+    String mo = DateTime.now().month.toString();
+    String? yData = prefs.getString(y);
+    if (yData == null) {
+      print("no record for this year($y)");
+      return;
+    }
+    Map yDataDecoded = json.decode(yData);
+    Map? mData = yDataDecoded[mo];
+    if (mData == null) {
+      print("no record for this month($mo)");
+      return;
+    }
+    List<SysDiaStats> sysDiaBarCharDataClean =
+        mData.values.toList().map((data) {
+      return SysDiaStats(
+          '${data["date_time"]["day"]}/${data["date_time"]["month"]}',
+          data["sys"],
+          data["dia"]);
+    }).toList();
+    setState(() {
+      sysDiaBarCharData = sysDiaBarCharDataClean;
+    });
   }
 
   @override
   void initState() {
-    // _loadMonthData();
+    _loadMonthData();
     _loadLatestData();
     super.initState();
   }
@@ -202,7 +148,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
               children: [
                 ///
 
-                SysDiaBarChar(),
+                SysDiaBarChar(data: sysDiaBarCharData),
 
                 // SysDiaBarChar(),
                 SizedBox(height: 10.h),
