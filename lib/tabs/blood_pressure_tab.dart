@@ -242,6 +242,16 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 78.h,
+        title: Text(
+          "Blood Pressure Tracker",
+          style: TextStyle(fontSize: 32.sp, color: Colors.white),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: AppColors.primary,
+      ),
       body: AppContainer(
           child: Column(
         children: [

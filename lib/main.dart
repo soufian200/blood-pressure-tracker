@@ -1,5 +1,5 @@
 import 'package:bptracker/pages/pressure_record.dart';
-import 'package:bptracker/pages/tracker.dart';
+import 'package:bptracker/tabs/blood_pressure_tab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
@@ -19,7 +19,7 @@ void main() {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         getPages: [
-          GetPage(name: "/", page: () => const Tracker()),
+          GetPage(name: "/", page: () => const BloodPressureTab()),
           GetPage(name: "/pressure_record", page: () => const PressureRecord()),
         ],
       );
