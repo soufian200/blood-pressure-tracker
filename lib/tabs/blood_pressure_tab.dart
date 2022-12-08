@@ -10,34 +10,13 @@ import 'package:bptracker/widgets/app_card.dart';
 import 'package:bptracker/widgets/app_container.dart';
 import 'package:bptracker/widgets/app_title.dart';
 import 'package:bptracker/widgets/label.dart';
+import 'package:bptracker/widgets/monthly_head.dart';
 import 'package:bptracker/widgets/sys_dia_bar_char.dart';
 import 'package:bptracker/widgets/sys_dia_record.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-/// Generate Dropdown items
-List<String> getMonthListItems() {
-  List<String> monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ];
-  List<String> items = monthNames.map((mo) {
-    return "${mo.substring(0, 3)} ${DateTime.now().year}";
-  }).toList();
-  return items;
-}
 
 class BloodPressureTab extends StatefulWidget {
   const BloodPressureTab({Key? key}) : super(key: key);
@@ -58,7 +37,6 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
     "dia": {"max": 0, "min": 0},
     "pulse": {"max": 0, "min": 0}
   };
-  List<String> items = getMonthListItems();
 
   ///
   void _loadLatestData() async {
@@ -256,49 +234,14 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
           child: Column(
         children: [
           SizedBox(height: 10.sp),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppTitle(
-                txt: "Monthly",
-                fontSize: 25.sp,
-                color: Colors.black.withOpacity(.5),
-                // fontWeight: FontWeight.bold,
-              ),
-              Container(
-                height: 40.h,
-                padding: EdgeInsets.symmetric(horizontal: 14.w),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10.r))),
-                child: DropdownButton(
-                  elevation: 1,
-                  borderRadius: BorderRadius.all(Radius.circular(10.r)),
-                  underline: const SizedBox(),
-                  style: TextStyle(
-                      // fontWeight: FontWeight.bold,
-                      fontSize: 16.sp,
-                      color: Colors.black.withOpacity(.7)),
-                  value: items[selectedMonthIndex],
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Colors.grey.withOpacity(.7),
-                  ),
-                  items: items.map((String item) {
-                    return DropdownMenuItem(
-                      value: item,
-                      child: Text(item),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedMonthIndex = items.indexOf(newValue!);
-                    });
-                    _refreshDataBySelectDate();
-                  },
-                ),
-              ),
-            ],
+          MonthlyHead(
+            selectedMonthIndex: selectedMonthIndex,
+            onChange: (val) {
+              setState(() {
+                selectedMonthIndex = items.indexOf(val!);
+              });
+              _refreshDataBySelectDate();
+            },
           ),
           SizedBox(height: 10.sp),
           _loading
@@ -494,7 +437,10 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
                         AppButton(
                           label: "See All History",
                           onTap: () {
+                            // print(_allMonthsData.length);
                             print("See all history");
+                            Get.toNamed("/blood_pressure_history",
+                                arguments: {"monthlyData": _allMonthsData});
                           },
                         ),
                         SizedBox(height: 100.sp),

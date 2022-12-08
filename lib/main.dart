@@ -1,3 +1,4 @@
+import 'package:bptracker/pages/blood_pressure_history.dart';
 import 'package:bptracker/pages/pressure_record.dart';
 import 'package:bptracker/tabs/blood_pressure_tab.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,11 +16,14 @@ void main() {
     splitScreenMode: true,
     builder: (context, widget) {
       return GetMaterialApp(
-        title: "Blood Pressure Tracker",
+        title: "History",
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         getPages: [
           GetPage(name: "/", page: () => const BloodPressureTab()),
+          GetPage(
+              name: "/blood_pressure_history",
+              page: () => const BloodPressureHistory()),
           GetPage(name: "/pressure_record", page: () => const PressureRecord()),
         ],
       );
