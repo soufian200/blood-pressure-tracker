@@ -21,7 +21,7 @@ class SysDiaBarChar extends StatelessWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: ConstrainedBox(
-          constraints: BoxConstraints(minWidth: 334.w),
+          constraints: BoxConstraints(minWidth: 330.w),
           child: Container(
             padding: EdgeInsets.all(5.r),
             width: 70.w * data.length,

@@ -437,8 +437,6 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
                         AppButton(
                           label: "See All History",
                           onTap: () {
-                            // print(_allMonthsData.length);
-                            print("See all history");
                             Get.toNamed("/blood_pressure_history",
                                 arguments: {"monthlyData": _allMonthsData});
                           },
@@ -455,8 +453,14 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
           Icons.add,
           size: 25.sp,
         ),
-        onPressed: () {
+        onPressed: () async {
           Get.toNamed("/pressure_record");
+          // var isAdded = await
+          // print(isAdded);
+          // if (isAdded != null) {
+          //   // setState(() {});
+          //   _refreshDataBySelectDate();
+          // }
         },
       ),
     );

@@ -87,7 +87,7 @@ class _PressureRecordState extends State<PressureRecord> {
       mo: {dateTimeStr: dayContext}
     };
 
-    print("=================");
+    // print("=================");
 
     /// Store in Local Storage
     final prefs = await SharedPreferences.getInstance();
@@ -106,10 +106,8 @@ class _PressureRecordState extends State<PressureRecord> {
       String encodedContext = json.encode(context);
       prefs.setString(y, encodedContext);
     }
-    // print(encodedContext);
 
-    /// Return Back
-    Get.back();
+    Get.offAllNamed("/");
   }
 
   @override
