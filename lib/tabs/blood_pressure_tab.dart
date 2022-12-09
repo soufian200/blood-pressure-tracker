@@ -4,7 +4,6 @@ import 'package:bptracker/models/pressure_record_model.dart';
 import 'package:bptracker/models/sys_dia_stats.dart';
 // import 'package:bptracker/pages/pressure_record.dart';
 import 'package:bptracker/utils/colors.dart';
-import 'package:bptracker/utils/fake_data.dart';
 import 'package:bptracker/widgets/app_button.dart';
 import 'package:bptracker/widgets/app_card.dart';
 import 'package:bptracker/widgets/app_container.dart';
@@ -26,45 +25,37 @@ class BloodPressureTab extends StatefulWidget {
 }
 
 class _BloodPressureTabState extends State<BloodPressureTab> {
+  int maxLatest = 5;
   List<PressureRecordModel> latest = [];
   List<SysDiaStats> sysDiaBarCharData = [];
-  late List _allMonthsData;
-  bool _isMonthEmpty = true;
-  bool _loading = false;
+  List _allMonthsData = [];
 
-  final Map<String, dynamic> _stats = {
+  Map<String, dynamic> _stats = {
     "sys": {"max": 0, "min": 0},
     "dia": {"max": 0, "min": 0},
     "pulse": {"max": 0, "min": 0}
   };
 
+  void _resetUIData() {
+    setState(() {
+      _stats = {
+        "sys": {"max": 0, "min": 0},
+        "dia": {"max": 0, "min": 0},
+        "pulse": {"max": 0, "min": 0}
+      };
+      latest = [];
+      sysDiaBarCharData = [];
+      _allMonthsData = [];
+    });
+  }
+
   ///
   void _loadLatestData() async {
-    final prefs = await SharedPreferences.getInstance();
-    String y = DateTime.now().year.toString();
-    String mo = DateTime.now().month.toString();
-    String? yData = prefs.getString(y);
-    if (yData == null) {
-      print("no record for this year($y)");
-      return;
-    }
-    Map yDataDecoded = json.decode(yData);
-    Map? mData = yDataDecoded[mo];
-    if (mData == null) {
-      print("no record for this month($mo)");
-      return;
-    }
-
-    Map mDataSorted = Map.fromEntries(
-        mData.entries.toList()..sort((e1, e2) => e2.key.compareTo(e1.key)));
-    int maxLatest = 5;
-    int lenLatest = mDataSorted.values.toList().length;
-    // List moList = await _getMonthList();
     if (_allMonthsData.isEmpty) {
       print("Empty.....");
       return;
     }
-
+    int lenLatest = _allMonthsData.length;
     List<PressureRecordModel> latestData = _allMonthsData
         .sublist(0, lenLatest > maxLatest ? maxLatest : lenLatest)
         .map((decodedContext) {
@@ -84,9 +75,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
 
   Future<void> _getMonthList() async {
     print("Start calling _getMonthList.....");
-    setState(() {
-      _loading = true;
-    });
+
     final prefs = await SharedPreferences.getInstance();
     String y = items[selectedMonthIndex].split(" ")[1];
     String mo = (selectedMonthIndex + 1).toString();
@@ -95,6 +84,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
     // print(yData);
     if (yData == null) {
       print("no record for this year($y)");
+
       return;
     }
 
@@ -102,10 +92,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
     Map? mData = yDataDecoded[mo];
     if (mData == null) {
       print("no record for this month($mo)");
-      setState(() {
-        _isMonthEmpty = true;
-        _loading = false;
-      });
+      // _resetUIData();
       return;
     }
 
@@ -114,8 +101,6 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
     List dd = mDataSorted.values.toList();
     setState(() {
       _allMonthsData = dd;
-      _loading = false;
-      _isMonthEmpty = false;
     });
     // return dd;
   }
@@ -192,7 +177,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
   int selectedMonthIndex = DateTime.now().month - 1;
 
   void _refreshDataBySelectDate() async {
-    // print("Get by:${items[selectedMonthIndex]}...");
+    _resetUIData();
     await _getMonthList();
     _loadMonthStats();
     _loadMonthCharData();
@@ -201,18 +186,21 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
 
   ///
   void _loadFakeData() async {
-    print("Loading Fake Date.....");
     final prefs = await SharedPreferences.getInstance();
-    fakeData.keys.toList().forEach((k) {
-      // print(k);
-      // print(fakeData[k]);
-      prefs.setString(k, json.encode(fakeData[k]));
-    });
+    print("Clearing.....");
+    prefs.clear();
+    // print("Loading Fake Date.....");
+    // fakeData.keys.toList().forEach((k) {
+    //   // print(k);
+    //   // print(fakeData[k]);
+    //   prefs.setString(k, json.encode(fakeData[k]));
+    // });
   }
 
   @override
   void initState() {
     // _loadFakeData();
+
     _refreshDataBySelectDate();
     super.initState();
   }
@@ -244,206 +232,189 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
             },
           ),
           SizedBox(height: 10.sp),
-          _loading
-              ? Container(
-                  height: 200.h,
-                  padding: EdgeInsets.symmetric(horizontal: 14.w),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(20.r))),
-                  child: Center(
-                      child: SizedBox(
-                    width: 50.r,
-                    height: 50.r,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.r,
-                      color: AppColors.primary,
+          Column(
+            children: [
+              AppCard(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          width: 60.w,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                  width: 1.h,
+                                  color: Colors.grey.withOpacity(.3)),
+                            ),
+                          ),
+                          child: Center(
+                            child: AppTitle(
+                              txt: "Max",
+                              fontSize: 25.sp,
+                              color: Colors.black.withOpacity(.6),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 15.w),
+                        Container(
+                          width: 60.w,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                  width: 1.h,
+                                  color: Colors.grey.withOpacity(.3)),
+                            ),
+                          ),
+                          child: Center(
+                            child: AppTitle(
+                              txt: "Min",
+                              fontSize: 25.sp,
+                              color: Colors.black.withOpacity(.6),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  )),
-                )
-              : _isMonthEmpty
+                    Column(children: [
+                      Label(
+                        title: "Systolic",
+                        subtitle: "mmHg",
+                        color: AppColors.systolic,
+                        stats: {
+                          "min": _stats["sys"]["min"],
+                          "max": _stats["sys"]["max"]
+                        },
+                      ),
+                      SizedBox(height: 17.h),
+                      Label(
+                        title: "Diastolic",
+                        subtitle: "mmHg",
+                        color: AppColors.diastolic,
+                        stats: {
+                          "min": _stats["dia"]["min"],
+                          "max": _stats["dia"]["max"]
+                        },
+                      ),
+                      SizedBox(height: 17.h),
+                      Label(
+                        title: "Pulse",
+                        subtitle: "BMP",
+                        color: AppColors.pulse,
+                        stats: {
+                          "min": _stats["pulse"]["min"],
+                          "max": _stats["pulse"]["max"]
+                        },
+                      ),
+                    ]),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20.sp),
+              AppCard(
+                child: Column(
+                  children: [
+                    ///
+
+                    SysDiaBarChar(data: sysDiaBarCharData),
+
+                    // SysDiaBarChar(),
+                    SizedBox(height: 10.h),
+                    Row(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 10.r,
+                              height: 10.r,
+                              color: AppColors.systolic,
+                            ),
+                            SizedBox(width: 5.w),
+                            const Text("Systolic")
+                          ],
+                        ),
+                        SizedBox(width: 20.w),
+                        Row(
+                          children: [
+                            Container(
+                              width: 10.r,
+                              height: 10.r,
+                              color: AppColors.diastolic,
+                            ),
+                            SizedBox(width: 5.w),
+                            const Text("Diastolic")
+                          ],
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(height: 20.sp),
+              Row(
+                children: [
+                  AppTitle(
+                    txt: "Latest",
+                    fontSize: 25.sp,
+                    color: Colors.black.withOpacity(.5),
+                    // fontWeight: FontWeight.bold,
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.sp),
+              latest.isEmpty
                   ? Container(
-                      height: 200.h,
-                      padding: EdgeInsets.symmetric(horizontal: 14.w),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius:
-                              BorderRadius.all(Radius.circular(20.r))),
+                              BorderRadius.all(Radius.circular(10.r))),
+                      height: 100.h,
                       child: Center(
-                          child: AppTitle(
-                        txt: "No Data yet",
-                        color: Colors.grey,
-                      )),
+                        child: AppTitle(
+                          txt: "No Records",
+                          color: Colors.grey,
+                        ),
+                      ),
                     )
                   : Column(
                       children: [
-                        AppCard(
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    width: 60.w,
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                            width: 1.h,
-                                            color: Colors.grey.withOpacity(.3)),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: AppTitle(
-                                        txt: "Max",
-                                        fontSize: 25.sp,
-                                        color: Colors.black.withOpacity(.6),
-                                      ),
-                                    ),
+                        ...latest
+                            .map((record) => Container(
+                                  margin: EdgeInsets.only(bottom: 10.h),
+                                  child: SysDiaRecord(
+                                    pressureRecord: record,
+                                    onAfterDelete: (bool? isDeleted,
+                                        PressureRecordModel record) {
+                                      if (isDeleted != null && isDeleted) {
+                                        _refreshDataBySelectDate();
+                                      }
+                                    },
                                   ),
-                                  SizedBox(width: 15.w),
-                                  Container(
-                                    width: 60.w,
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                            width: 1.h,
-                                            color: Colors.grey.withOpacity(.3)),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: AppTitle(
-                                        txt: "Min",
-                                        fontSize: 25.sp,
-                                        color: Colors.black.withOpacity(.6),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(children: [
-                                Label(
-                                  title: "Systolic",
-                                  subtitle: "mmHg",
-                                  color: AppColors.systolic,
-                                  stats: {
-                                    "min": _stats["sys"]["min"],
-                                    "max": _stats["sys"]["max"]
-                                  },
-                                ),
-                                SizedBox(height: 17.h),
-                                Label(
-                                  title: "Diastolic",
-                                  subtitle: "mmHg",
-                                  color: AppColors.diastolic,
-                                  stats: {
-                                    "min": _stats["dia"]["min"],
-                                    "max": _stats["dia"]["max"]
-                                  },
-                                ),
-                                SizedBox(height: 17.h),
-                                Label(
-                                  title: "Pulse",
-                                  subtitle: "BMP",
-                                  color: AppColors.pulse,
-                                  stats: {
-                                    "min": _stats["pulse"]["min"],
-                                    "max": _stats["pulse"]["max"]
-                                  },
-                                ),
-                              ]),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20.sp),
-                        AppCard(
-                          child: Column(
-                            children: [
-                              ///
-
-                              SysDiaBarChar(data: sysDiaBarCharData),
-
-                              // SysDiaBarChar(),
-                              SizedBox(height: 10.h),
-                              Row(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 10.r,
-                                        height: 10.r,
-                                        color: AppColors.systolic,
-                                      ),
-                                      SizedBox(width: 5.w),
-                                      const Text("Systolic")
-                                    ],
-                                  ),
-                                  SizedBox(width: 20.w),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 10.r,
-                                        height: 10.r,
-                                        color: AppColors.diastolic,
-                                      ),
-                                      SizedBox(width: 5.w),
-                                      const Text("Diastolic")
-                                    ],
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20.sp),
-                        Row(
-                          children: [
-                            AppTitle(
-                              txt: "Latest",
-                              fontSize: 25.sp,
-                              color: Colors.black.withOpacity(.5),
-                              // fontWeight: FontWeight.bold,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10.sp),
-                        latest.isEmpty
-                            ? Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.r))),
-                                height: 100.h,
-                                child: Center(
-                                  child: AppTitle(
-                                    txt: "No Records",
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              )
-                            : Column(
-                                children: [
-                                  ...latest
-                                      .map((record) => Container(
-                                            margin:
-                                                EdgeInsets.only(bottom: 10.h),
-                                            child: SysDiaRecord(
-                                              pressureRecord: record,
-                                            ),
-                                          ))
-                                      .toList()
-                                ],
-                              ),
-                        SizedBox(height: 10.sp),
-                        AppButton(
-                          label: "See All History",
-                          onTap: () {
-                            Get.toNamed("/blood_pressure_history",
-                                arguments: {"monthlyData": _allMonthsData});
-                          },
-                        ),
-                        SizedBox(height: 100.sp),
+                                ))
+                            .toList()
                       ],
-                    )
+                    ),
+              _allMonthsData.length < maxLatest
+                  ? const SizedBox()
+                  : SizedBox(height: 10.sp),
+              _allMonthsData.length <= maxLatest
+                  ? const SizedBox()
+                  : AppButton(
+                      label: "See All History",
+                      onTap: () async {
+                        bool isStateChanged = await Get.toNamed(
+                            "/blood_pressure_history",
+                            arguments: {"monthlyData": _allMonthsData});
+                        // print("RESULT: $r");
+                        if (isStateChanged) {
+                          _refreshDataBySelectDate();
+                        }
+                      },
+                    ),
+              SizedBox(height: 100.sp),
+            ],
+          )
         ],
       )),
       floatingActionButton: FloatingActionButton(
@@ -454,13 +425,10 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
           size: 25.sp,
         ),
         onPressed: () async {
-          Get.toNamed("/pressure_record");
-          // var isAdded = await
-          // print(isAdded);
-          // if (isAdded != null) {
-          //   // setState(() {});
-          //   _refreshDataBySelectDate();
-          // }
+          var isAdded = await Get.toNamed("/pressure_record");
+          if (isAdded != null && isAdded) {
+            _refreshDataBySelectDate();
+          }
         },
       ),
     );

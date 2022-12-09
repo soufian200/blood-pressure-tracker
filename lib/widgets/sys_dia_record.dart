@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bptracker/Methods/get_sys_dia_status.dart';
 import 'package:bptracker/models/bp_status.dart';
 import 'package:bptracker/models/pressure_record_model.dart';
@@ -7,11 +9,15 @@ import 'package:bptracker/widgets/app_card.dart';
 import 'package:bptracker/widgets/app_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/route_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SysDiaRecord extends StatelessWidget {
-  SysDiaRecord({Key? key, required this.pressureRecord}) : super(key: key);
+  SysDiaRecord({Key? key, required this.pressureRecord, this.onAfterDelete})
+      : super(key: key);
 
   PressureRecordModel pressureRecord;
+  final void Function(bool?, PressureRecordModel)? onAfterDelete;
 
   ///
 
@@ -23,10 +29,39 @@ class SysDiaRecord extends StatelessWidget {
         highlightColor: Colors.black.withOpacity(.4),
         borderRadius: BorderRadius.circular(40.r),
         onTap: () {
-          showModalBottomSheet(
+          var r = showModalBottomSheet(
               isScrollControlled: true,
               context: context,
               builder: (context) {
+                ///
+                void _deletePressureRecord() async {
+                  Map dateTime = pressureRecord.dateTime;
+                  String y = dateTime["year"].toString();
+                  String mo = dateTime["month"].toString();
+                  final prefs = await SharedPreferences.getInstance();
+                  String yData = prefs.getString(y)!;
+                  Map yDataDecoded = json.decode(yData);
+
+                  Map mData = yDataDecoded[mo];
+                  print("========");
+                  // print("$day/$mo/$y");
+                  print(mData.keys.toList().length);
+                  mData.remove(pressureRecord.date);
+                  print(pressureRecord.date);
+                  // print(mData.keys.toList());
+                  print(mData.keys.toList().length);
+                  yDataDecoded[mo] = mData;
+                  String encodedData = json.encode(yDataDecoded);
+                  prefs.setString(y, encodedData);
+                  onAfterDelete!(true, pressureRecord);
+
+                  Get.back();
+                  // Get.offAllNamed("/");
+                  // Map dayData = mData[pressureRecord.date];
+
+                  // print(dayData);
+                }
+
                 return Container(
                     height: 600.h,
                     padding: EdgeInsets.all(15.r),
@@ -163,22 +198,20 @@ class SysDiaRecord extends StatelessWidget {
                         SizedBox(height: 20.h),
                         Row(
                           children: [
-                            Expanded(
-                              child: AppButton(
-                                  label: "Edit",
-                                  bg: Colors.blue,
-                                  onTap: () {
-                                    print("edit");
-                                  }),
-                            ),
-                            SizedBox(width: 10.w),
+                            // Expanded(
+                            //   child: AppButton(
+                            //       label: "Edit",
+                            //       bg: Colors.blue,
+                            //       onTap: () {
+                            //         print("edit");
+                            //       }),
+                            // ),
+                            // SizedBox(width: 10.w),
                             Expanded(
                               child: AppButton(
                                   label: "Delete",
                                   bg: Colors.red,
-                                  onTap: () {
-                                    print("delete");
-                                  }),
+                                  onTap: _deletePressureRecord),
                             )
                           ],
                         )

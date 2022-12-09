@@ -16,6 +16,17 @@ class BloodPressureHistory extends StatefulWidget {
 
 class _BloodPressureHistoryState extends State<BloodPressureHistory> {
   List monthlyHistory = [];
+  bool isStateChanged = false;
+
+  void _deleteRecord(PressureRecordModel record) {
+    List newData = monthlyHistory.where((e) => e != record).toList();
+
+    setState(() {
+      monthlyHistory = newData;
+      isStateChanged = true;
+    });
+  }
+
   @override
   void initState() {
     var monthlyData = Get.arguments["monthlyData"];
@@ -38,59 +49,71 @@ class _BloodPressureHistoryState extends State<BloodPressureHistory> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          leading: Container(
-            padding: EdgeInsets.all(6.r),
-            child: InkWell(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.grey.withOpacity(.2),
-              borderRadius: BorderRadius.circular(40.r),
-              onTap: () {
-                Get.back();
-              },
-              child: Ink(
-                decoration: BoxDecoration(
-                    // color: Colors.blue,
-                    borderRadius: BorderRadius.circular(40.r)),
-                child: Center(
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 40.sp,
-                    color: Colors.white,
+    return WillPopScope(
+      onWillPop: () async {
+        Get.back(result: isStateChanged);
+        return true;
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            leading: Container(
+              padding: EdgeInsets.all(6.r),
+              child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.grey.withOpacity(.2),
+                borderRadius: BorderRadius.circular(40.r),
+                onTap: () {
+                  Get.back(result: isStateChanged);
+                },
+                child: Ink(
+                  decoration: BoxDecoration(
+                      // color: Colors.blue,
+                      borderRadius: BorderRadius.circular(40.r)),
+                  child: Center(
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      size: 40.sp,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ),
+            toolbarHeight: 78.h,
+            title: Text(
+              "History",
+              style: TextStyle(fontSize: 32.sp, color: Colors.white),
+            ),
+            centerTitle: true,
+            elevation: 0,
+            backgroundColor: AppColors.primary,
           ),
-          toolbarHeight: 78.h,
-          title: Text(
-            "History",
-            style: TextStyle(fontSize: 32.sp, color: Colors.white),
-          ),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: AppColors.primary,
-        ),
-        body: AppContainer(
-            child: monthlyHistory.isEmpty
-                ? Container(
-                    child: AppTitle(
-                      txt: "No Data",
-                      color: Colors.grey,
-                    ),
-                  )
-                : Column(
-                    children: [
-                      ...monthlyHistory
-                          .map((record) => Container(
-                                margin: EdgeInsets.only(bottom: 10.h),
-                                child: SysDiaRecord(
-                                  pressureRecord: record,
-                                ),
-                              ))
-                          .toList()
-                    ],
-                  )));
+          body: AppContainer(
+              child: monthlyHistory.isEmpty
+                  ? Container(
+                      child: AppTitle(
+                        txt: "No Data",
+                        color: Colors.grey,
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        ...monthlyHistory
+                            .map((record) => Container(
+                                  margin: EdgeInsets.only(bottom: 10.h),
+                                  child: SysDiaRecord(
+                                    pressureRecord: record,
+                                    onAfterDelete: (bool? isDeleted,
+                                        PressureRecordModel record) {
+                                      if (isDeleted != null && isDeleted) {
+                                        _deleteRecord(record);
+                                      }
+                                    },
+                                  ),
+                                ))
+                            .toList()
+                      ],
+                    ))),
+    );
   }
 }
