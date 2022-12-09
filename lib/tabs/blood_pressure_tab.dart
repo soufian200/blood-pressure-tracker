@@ -4,6 +4,7 @@ import 'package:bptracker/models/pressure_record_model.dart';
 import 'package:bptracker/models/sys_dia_stats.dart';
 // import 'package:bptracker/pages/pressure_record.dart';
 import 'package:bptracker/utils/colors.dart';
+import 'package:bptracker/utils/fake_data.dart';
 import 'package:bptracker/widgets/app_button.dart';
 import 'package:bptracker/widgets/app_card.dart';
 import 'package:bptracker/widgets/app_container.dart';
@@ -189,12 +190,10 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
     final prefs = await SharedPreferences.getInstance();
     print("Clearing.....");
     prefs.clear();
-    // print("Loading Fake Date.....");
-    // fakeData.keys.toList().forEach((k) {
-    //   // print(k);
-    //   // print(fakeData[k]);
-    //   prefs.setString(k, json.encode(fakeData[k]));
-    // });
+    print("Loading Fake Date.....");
+    fakeData.keys.toList().forEach((k) {
+      prefs.setString(k, json.encode(fakeData[k]));
+    });
   }
 
   @override
@@ -422,7 +421,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
         backgroundColor: AppColors.primary,
         child: Icon(
           Icons.add,
-          size: 25.sp,
+          size: 50.sp,
         ),
         onPressed: () async {
           var isAdded = await Get.toNamed("/pressure_record");

@@ -11,21 +11,21 @@ Map fakeData = {
           "year": 2022,
           "month": 11,
           "day": 2,
-          "hour": 15,
+          "hour": 12,
           "min": 45
         }
       },
       "3/11/2022 - 10:46": {
-        "sys": 73,
-        "dia": 42,
-        "pulse": 22,
-        "note": "ok",
+        "sys": 76,
+        "dia": 45,
+        "pulse": 31,
+        "note": "I Feel Normal",
         "date_time_str": "3/11/2022 - 10:46",
         "date_time": {
           "year": 2022,
           "month": 11,
           "day": 3,
-          "hour": 15,
+          "hour": 10,
           "min": 46
         }
       },
@@ -45,38 +45,32 @@ Map fakeData = {
       },
       "8/11/2022 - 18:34": {
         "sys": 100,
-        "dia": 45,
+        "dia": 65,
         "pulse": 60,
-        "note": "hello world",
-        "date_time_str": "8/11/2022 - 18:34",
+        "note": "",
+        "date_time_str": "8/11/2022 - 18:24",
         "date_time": {
           "year": 2022,
           "month": 11,
           "day": 8,
-          "hour": 14,
-          "min": 30
+          "hour": 18,
+          "min": 24
         }
       },
-      "9/11/2022 - 18:45": {
+      "9/11/2022 - 9:45": {
         "sys": 145,
         "dia": 65,
-        "pulse": 35,
+        "pulse": 44,
         "note": "okay I don't know what to say ",
-        "date_time_str": "9/11/2022 - 18:45",
-        "date_time": {
-          "year": 2022,
-          "month": 11,
-          "day": 9,
-          "hour": 18,
-          "min": 31
-        }
+        "date_time_str": "9/11/2022 - 9:45",
+        "date_time": {"year": 2022, "month": 11, "day": 9, "hour": 9, "min": 45}
       }
     },
     "12": {
       "1/12/2022 - 15:45": {
-        "sys": 70,
-        "dia": 40,
-        "pulse": 20,
+        "sys": 120,
+        "dia": 80,
+        "pulse": 50,
         "note": "this is the talks ",
         "date_time_str": "1/12/2022 - 15:45",
         "date_time": {
@@ -87,32 +81,32 @@ Map fakeData = {
           "min": 45
         }
       },
-      "2/12/2022 - 15:46": {
-        "sys": 73,
+      "2/12/2022 - 16:36": {
+        "sys": 83,
         "dia": 42,
-        "pulse": 22,
+        "pulse": 28,
         "note": "ok",
-        "date_time_str": "2/12/2022 - 15:46",
+        "date_time_str": "2/12/2022 - 16:36",
         "date_time": {
           "year": 2022,
           "month": 12,
           "day": 2,
-          "hour": 15,
-          "min": 46
+          "hour": 16,
+          "min": 36
         }
       },
       "3/12/2022 - 18:29": {
-        "sys": 126,
+        "sys": 70,
         "dia": 40,
-        "pulse": 21,
+        "pulse": 30,
         "note": "",
-        "date_time_str": "3/12/2022 - 18:29",
+        "date_time_str": "3/12/2022 - 17:32",
         "date_time": {
           "year": 2022,
           "month": 12,
           "day": 3,
-          "hour": 18,
-          "min": 29
+          "hour": 17,
+          "min": 32
         }
       },
       "4/12/2022 - 18:30": {

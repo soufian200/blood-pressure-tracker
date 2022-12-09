@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const Color primary = Colors.redAccent;
-  static const Color systolic = Color.fromARGB(255, 49, 211, 68);
-  static const Color diastolic = Color.fromARGB(255, 219, 14, 124);
-  static const Color pulse = Color.fromARGB(255, 14, 103, 219);
+  static const Color systolic = Color.fromARGB(255, 14, 103, 219);
+  static const Color diastolic = Color.fromARGB(255, 10, 216, 113);
+  static const Color pulse = Color.fromARGB(255, 212, 14, 219);
 
   static const Color normal = Color(0xffa6ce39);
   static const Color elevated = Color(0xffFFE15D);

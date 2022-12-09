@@ -33,7 +33,7 @@ BPStatus getSysDiaStatus(sys, dia) {
     return bpStatus[2];
   } else if (sys <= 180 && dia <= 120) {
     return bpStatus[3];
-  } else if (sys <= 190 && dia <= 180) {
+  } else if (sys <= 200 && dia <= 200) {
     return bpStatus[4];
   } else {
     return bpStatus[0];
