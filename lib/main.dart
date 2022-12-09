@@ -3,6 +3,7 @@ import 'package:bptracker/pages/bottom_nav_main.dart';
 import 'package:bptracker/pages/post_detail.dart';
 import 'package:bptracker/pages/posts.dart';
 import 'package:bptracker/pages/pressure_record.dart';
+import 'package:bptracker/pages/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
@@ -20,11 +21,11 @@ void main() {
       return GetMaterialApp(
         title: "Blood Pressure Tracker",
         debugShowCheckedModeBanner: false,
-        initialRoute: '/',
+        initialRoute: '/settings',
         getPages: [
           GetPage(name: "/", page: () => const BottomNavMain()),
-          // GetPage(name: "/", page: () => const BloodPressureTab()),
           GetPage(name: "/posts", page: () => Posts()),
+          GetPage(name: "/settings", page: () => const Settings()),
           GetPage(name: "/post_detail", page: () => const PostsDetail()),
           GetPage(
               name: "/blood_pressure_history",
