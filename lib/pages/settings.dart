@@ -13,11 +13,13 @@ import 'package:flutter_excel/excel.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:get/route_manager.dart';
+import 'package:launch_review/launch_review.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings extends StatelessWidget {
-  const Settings({Key? key}) : super(key: key);
+  Settings({Key? key}) : super(key: key);
 
   /// Export as excel File
   void _exportAsFile() async {
@@ -98,6 +100,8 @@ class Settings extends StatelessWidget {
     ));
   }
 
+  String bundleId = "com.samlam.bp1";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,7 +130,16 @@ class Settings extends StatelessWidget {
                 label: "Rate Us",
                 icon: Icons.star,
                 onTap: () {
-                  print("jo");
+                  LaunchReview.launch(androidAppId: bundleId);
+                },
+              ),
+              SizedBox(height: 10.h),
+              PressableLi(
+                label: "Share With Friends",
+                icon: Icons.share,
+                onTap: () {
+                  Share.share(
+                      'Check Out This Blood Pressure Tracker: https://play.google.com/store/apps/details?id=$bundleId');
                 },
               ),
               SizedBox(height: 10.h),
@@ -135,6 +148,7 @@ class Settings extends StatelessWidget {
                 icon: Icons.tips_and_updates,
                 onTap: () {
                   print("jo");
+                  LaunchReview.launch(androidAppId: "com.samlam.modsformelon");
                 },
               ),
             ],

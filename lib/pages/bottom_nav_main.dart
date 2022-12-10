@@ -1,4 +1,5 @@
 import 'package:bptracker/pages/posts.dart';
+import 'package:bptracker/pages/settings.dart';
 import 'package:bptracker/tabs/blood_pressure_tab.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:flutter/services.dart';
@@ -118,7 +119,8 @@ class _BottomNavMainState extends State<BottomNavMain> {
       //   ),
       // ),
       body: IndexedStack(
-          index: _selectedIndex, children: [const BloodPressureTab(), Posts()]),
+          index: _selectedIndex,
+          children: [Posts(), const BloodPressureTab(), Settings()]),
       bottomNavigationBar: Container(
           decoration: BoxDecoration(
             border: Border(
@@ -128,9 +130,9 @@ class _BottomNavMainState extends State<BottomNavMain> {
           child: BottomNavigationBar(
             currentIndex: _selectedIndex,
             selectedItemColor: AppColors.primary,
-            unselectedItemColor: Colors.black.withOpacity(.5),
+            unselectedItemColor: Colors.grey.withOpacity(.5),
             unselectedIconTheme: IconThemeData(
-              color: Colors.black.withOpacity(.4),
+              color: Colors.grey.withOpacity(.5),
             ),
             onTap: (val) {
               setState(() {
@@ -149,6 +151,13 @@ class _BottomNavMainState extends State<BottomNavMain> {
             type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.import_contacts,
+                  size: 45.sp,
+                ),
+                label: 'Guide',
+              ),
+              BottomNavigationBarItem(
                 icon: Center(
                   child: Icon(
                     Icons.stacked_bar_chart,
@@ -159,10 +168,10 @@ class _BottomNavMainState extends State<BottomNavMain> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.import_contacts,
+                  Icons.settings,
                   size: 45.sp,
                 ),
-                label: 'Guide',
+                label: 'Settings',
               ),
             ],
           )),

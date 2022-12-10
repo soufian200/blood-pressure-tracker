@@ -21,11 +21,11 @@ void main() {
       return GetMaterialApp(
         title: "Blood Pressure Tracker",
         debugShowCheckedModeBanner: false,
-        initialRoute: '/settings',
+        initialRoute: '/',
         getPages: [
           GetPage(name: "/", page: () => const BottomNavMain()),
           GetPage(name: "/posts", page: () => Posts()),
-          GetPage(name: "/settings", page: () => const Settings()),
+          GetPage(name: "/settings", page: () => Settings()),
           GetPage(name: "/post_detail", page: () => const PostsDetail()),
           GetPage(
               name: "/blood_pressure_history",
