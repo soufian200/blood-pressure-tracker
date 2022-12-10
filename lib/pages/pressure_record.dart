@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bptracker/Methods/get_sys_dia_status.dart';
 import 'package:bptracker/models/bp_status.dart';
+import 'package:bptracker/utils/ads_manager.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_button.dart';
 import 'package:bptracker/widgets/app_container.dart';
@@ -109,6 +110,10 @@ class _PressureRecordState extends State<PressureRecord> {
       String encodedContext = json.encode(context);
       prefs.setString(y, encodedContext);
     }
+    ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+      backgroundColor: Colors.black.withOpacity(.7),
+      content: const Text('Added Successfully'),
+    ));
 
     // Get.offAllNamed("/");
     Get.back(result: true);
@@ -166,6 +171,7 @@ class _PressureRecordState extends State<PressureRecord> {
           Column(
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              AdsManager.bannerAd(),
               Icon(Icons.favorite, size: 200.sp, color: _crrbpStatus.color),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 22.w),
@@ -354,6 +360,7 @@ class _PressureRecordState extends State<PressureRecord> {
             onTimeChanged: _onTimeChanged,
           ),
           SizedBox(height: 20.h),
+          AdsManager.bannerAd(),
           Row(
             children: [
               AppTitle(

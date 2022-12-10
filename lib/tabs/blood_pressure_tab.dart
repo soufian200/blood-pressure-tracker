@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:bptracker/models/pressure_record_model.dart';
 import 'package:bptracker/models/sys_dia_stats.dart';
+import 'package:bptracker/utils/ads_manager.dart';
 // import 'package:bptracker/pages/pressure_record.dart';
 import 'package:bptracker/utils/colors.dart';
-import 'package:bptracker/utils/fake_data.dart';
 import 'package:bptracker/widgets/app_button.dart';
 import 'package:bptracker/widgets/app_card.dart';
 import 'package:bptracker/widgets/app_container.dart';
@@ -190,10 +190,10 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
     final prefs = await SharedPreferences.getInstance();
     print("Clearing.....");
     prefs.clear();
-    print("Loading Fake Date.....");
-    fakeData.keys.toList().forEach((k) {
-      prefs.setString(k, json.encode(fakeData[k]));
-    });
+    // print("Loading Fake Date.....");
+    // fakeData.keys.toList().forEach((k) {
+    //   prefs.setString(k, json.encode(fakeData[k]));
+    // });
   }
 
   @override
@@ -220,6 +220,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
       body: AppContainer(
           child: Column(
         children: [
+          AdsManager.bannerAd(),
           SizedBox(height: 10.sp),
           MonthlyHead(
             selectedMonthIndex: selectedMonthIndex,
@@ -351,6 +352,7 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
                 ),
               ),
               SizedBox(height: 20.sp),
+              AdsManager.bannerAd(),
               Row(
                 children: [
                   AppTitle(
@@ -424,9 +426,11 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
           size: 50.sp,
         ),
         onPressed: () async {
+          AdsManager.showInterAd();
           var isAdded = await Get.toNamed("/pressure_record");
           if (isAdded != null && isAdded) {
             _refreshDataBySelectDate();
+            AdsManager.showInterAd();
           }
         },
       ),

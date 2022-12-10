@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bptracker/Methods/get_sys_dia_status.dart';
 import 'package:bptracker/models/bp_status.dart';
 import 'package:bptracker/models/pressure_record_model.dart';
+import 'package:bptracker/utils/ads_manager.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_button.dart';
 import 'package:bptracker/widgets/app_card.dart';
@@ -35,6 +36,7 @@ class SysDiaRecord extends StatelessWidget {
               builder: (context) {
                 ///
                 void _deletePressureRecord() async {
+                  AdsManager.showInterAd();
                   Map dateTime = pressureRecord.dateTime;
                   String y = dateTime["year"].toString();
                   String mo = dateTime["month"].toString();
@@ -55,6 +57,11 @@ class SysDiaRecord extends StatelessWidget {
                   prefs.setString(y, encodedData);
                   onAfterDelete!(true, pressureRecord);
 
+                  ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+                    backgroundColor: Colors.black.withOpacity(.7),
+                    content: const Text('Deleted Successfully'),
+                  ));
+
                   Get.back();
                   // Get.offAllNamed("/");
                   // Map dayData = mData[pressureRecord.date];
@@ -63,10 +70,11 @@ class SysDiaRecord extends StatelessWidget {
                 }
 
                 return Container(
-                    height: 600.h,
+                    height: .9.sh,
                     padding: EdgeInsets.all(15.r),
                     child: Column(
                       children: [
+                        AdsManager.bannerAd(),
                         Text(pressureRecord.date.toString(),
                             style: TextStyle(
                                 fontSize: 20.sp,

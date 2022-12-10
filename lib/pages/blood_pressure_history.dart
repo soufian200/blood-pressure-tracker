@@ -1,4 +1,5 @@
 import 'package:bptracker/models/pressure_record_model.dart';
+import 'package:bptracker/utils/ads_manager.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_container.dart';
 import 'package:bptracker/widgets/app_title.dart';
@@ -51,6 +52,7 @@ class _BloodPressureHistoryState extends State<BloodPressureHistory> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        AdsManager.showInterAd();
         Get.back(result: isStateChanged);
         return true;
       },
@@ -98,6 +100,7 @@ class _BloodPressureHistoryState extends State<BloodPressureHistory> {
                     )
                   : Column(
                       children: [
+                        AdsManager.bannerAd(),
                         ...monthlyHistory
                             .map((record) => Container(
                                   margin: EdgeInsets.only(bottom: 10.h),

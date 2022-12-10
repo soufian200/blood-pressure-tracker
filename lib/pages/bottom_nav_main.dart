@@ -1,6 +1,7 @@
 import 'package:bptracker/pages/posts.dart';
 import 'package:bptracker/pages/settings.dart';
 import 'package:bptracker/tabs/blood_pressure_tab.dart';
+import 'package:bptracker/utils/ads_manager.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,7 +15,7 @@ class BottomNavMain extends StatefulWidget {
 }
 
 class _BottomNavMainState extends State<BottomNavMain> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   @override
   void initState() {
@@ -24,10 +25,8 @@ class _BottomNavMainState extends State<BottomNavMain> {
       DeviceOrientation.portraitDown,
     ]);
 
-    /// change navbar bg color
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.black // navigation bar color
-        ));
+    ///
+    AdsManager.initUnityAds();
 
     super.initState();
   }
@@ -40,84 +39,6 @@ class _BottomNavMainState extends State<BottomNavMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // drawer: Drawer(
-      //   backgroundColor: Config.drawer,
-      //   child: ListView(
-      //     // Important: Remove any padding from the ListView.
-      //     padding: EdgeInsets.zero,
-      //     children: [
-      //       SizedBox(
-      //         height: 130.h,
-      //         child: const DrawerHeader(
-      //           child: Logo(),
-      //         ),
-      //       ),
-      //       Divider(color: Colors.white.withOpacity(.1)),
-      //       DrawerItem(
-      //         icon: const Icon(
-      //           Icons.file_download_outlined,
-      //           color: Colors.white,
-      //         ),
-      //         title: "Completed",
-      //         onTap: () {
-      //           bottomNavbarController.changeSelectedIndex(0);
-      //         },
-      //       ),
-      //       DrawerItem(
-      //         icon: const Icon(
-      //           Icons.downloading_outlined,
-      //           color: Colors.white,
-      //         ),
-      //         title: "Downloading",
-      //         onTap: () {
-      //           bottomNavbarController.changeSelectedIndex(2);
-      //         },
-      //       ),
-      //       DrawerItem(
-      //         icon: const Icon(
-      //           Icons.home_rounded,
-      //           color: Colors.white,
-      //         ),
-      //         title: "Home",
-      //         onTap: () {
-      //           bottomNavbarController.changeSelectedIndex(1);
-      //         },
-      //       ),
-      //       Divider(color: Colors.white.withOpacity(.1)),
-      //       DrawerItem(
-      //         icon: const Icon(
-      //           Icons.star,
-      //           color: Colors.white,
-      //         ),
-      //         title: 'Rate us',
-      //         onTap: () {
-      //           LaunchReview.launch(androidAppId: Config.bundleId);
-      //         },
-      //       ),
-      //       DrawerItem(
-      //         icon: const Icon(
-      //           Icons.share,
-      //           color: Colors.white,
-      //         ),
-      //         title: 'Share it',
-      //         onTap: () {
-      //           Share.share(
-      //               'https://play.google.com/store/apps/details?id=${Config.bundleId}');
-      //         },
-      //       ),
-      //       DrawerItem(
-      //         icon: const Icon(
-      //           Icons.tips_and_updates_outlined,
-      //           color: Colors.white,
-      //         ),
-      //         title: 'Update Now',
-      //         onTap: () {
-      //           LaunchReview.launch(androidAppId: Config.bundleId);
-      //         },
-      //       ),
-      //     ],
-      //   ),
-      // ),
       body: IndexedStack(
           index: _selectedIndex,
           children: [Posts(), const BloodPressureTab(), Settings()]),
