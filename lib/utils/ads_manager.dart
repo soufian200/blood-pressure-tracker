@@ -3,7 +3,7 @@ import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 class AdsManager {
   static const bool isAdsEnabled = true;
-  static const bool testMode = true;
+  static const bool testMode = false;
   static const String gameId = "4957339";
 
   ///
