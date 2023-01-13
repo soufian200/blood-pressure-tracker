@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bptracker/models/pressure_record_model.dart';
 import 'package:bptracker/models/sys_dia_stats.dart';
+import 'package:bptracker/utils/admob_ads_manager.dart';
 import 'package:bptracker/utils/ads_manager.dart';
 // import 'package:bptracker/pages/pressure_record.dart';
 import 'package:bptracker/utils/colors.dart';
@@ -26,6 +27,7 @@ class BloodPressureTab extends StatefulWidget {
 }
 
 class _BloodPressureTabState extends State<BloodPressureTab> {
+  late AdmobAdsManager admobAdsManager;
   int maxLatest = 5;
   List<PressureRecordModel> latest = [];
   List<SysDiaStats> sysDiaBarCharData = [];
@@ -196,12 +198,27 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
     // });
   }
 
+  bool bannerLoaded = false;
   @override
   void initState() {
     // _loadFakeData();
 
+    admobAdsManager = AdmobAdsManager();
+    admobAdsManager.loadBannerAd((val) {
+      setState(() {
+        bannerLoaded = val;
+      });
+    });
+    admobAdsManager.loadIntertitialAd();
+
     _refreshDataBySelectDate();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    admobAdsManager.disposeBannerAd();
+    super.dispose();
   }
 
   @override
@@ -220,7 +237,12 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
       body: AppContainer(
           child: Column(
         children: [
+          ///Unity ads
           AdsManager.bannerAd(),
+
+          /// Admob ad baner
+          bannerLoaded ? admobAdsManager.getBannerAd() : const SizedBox(),
+
           SizedBox(height: 10.sp),
           MonthlyHead(
             selectedMonthIndex: selectedMonthIndex,
@@ -430,7 +452,12 @@ class _BloodPressureTabState extends State<BloodPressureTab> {
           var isAdded = await Get.toNamed("/pressure_record");
           if (isAdded != null && isAdded) {
             _refreshDataBySelectDate();
+
+            /// Unity Ads
             AdsManager.showInterAd();
+
+            /// Admob Ad
+            admobAdsManager.showAdmobInterAd();
           }
         },
       ),

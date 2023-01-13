@@ -50,7 +50,7 @@ dependencies:
   launch_review: ^3.0.1
   share_plus: ^6.3.0
   unity_ads_plugin: ^0.3.7
-  # excel: ^1.1.5
+  google_mobile_ads: ^2.3.0
 
 dev_dependencies:
   flutter_test:

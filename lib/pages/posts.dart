@@ -1,4 +1,5 @@
 import 'package:bptracker/models/post_model.dart';
+import 'package:bptracker/utils/admob_ads_manager.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_container.dart';
 import 'package:bptracker/widgets/app_title.dart';
@@ -6,9 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 
-class Posts extends StatelessWidget {
-  Posts({Key? key}) : super(key: key);
+class Posts extends StatefulWidget {
+  const Posts({Key? key}) : super(key: key);
 
+  @override
+  State<Posts> createState() => _PostsState();
+}
+
+class _PostsState extends State<Posts> {
   final List<PostModel> _posts = [
     PostModel(
       title: "How to lower blood pressure naturally?",
@@ -254,6 +260,27 @@ class Posts extends StatelessWidget {
         ]),
   ];
 
+  ///
+  late AdmobAdsManager admobAdsManager;
+  bool bannerLoaded = false;
+  @override
+  void initState() {
+    admobAdsManager = AdmobAdsManager();
+    admobAdsManager.loadBannerAd((val) {
+      setState(() {
+        bannerLoaded = val;
+      });
+    });
+    admobAdsManager.loadIntertitialAd();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    admobAdsManager.disposeBannerAd();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -292,6 +319,9 @@ class Posts extends StatelessWidget {
         ),
         body: AppContainer(
             child: Column(children: [
+          /// Admob ad baner
+          bannerLoaded ? admobAdsManager.getBannerAd() : const SizedBox(),
+          SizedBox(height: 10.sp),
           Container(
             height: 200.h,
             decoration: BoxDecoration(
@@ -312,6 +342,10 @@ class Posts extends StatelessWidget {
                   highlightColor: Colors.black.withOpacity(.2),
                   borderRadius: BorderRadius.circular(20.r),
                   onTap: () {
+                    /// Admob Ad
+                    admobAdsManager.showAdmobInterAd();
+
+                    ///
                     Get.toNamed("/post_detail", arguments: {"post": post});
                   },
                   child: Ink(

@@ -1,4 +1,5 @@
 import 'package:bptracker/models/post_model.dart';
+import 'package:bptracker/utils/admob_ads_manager.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_card.dart';
 import 'package:bptracker/widgets/app_container.dart';
@@ -7,13 +8,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 
-class PostsDetail extends StatelessWidget {
+class PostsDetail extends StatefulWidget {
   const PostsDetail({Key? key}) : super(key: key);
+
+  @override
+  State<PostsDetail> createState() => _PostsDetailState();
+}
+
+class _PostsDetailState extends State<PostsDetail> {
+  ///
+  late AdmobAdsManager admobAdsManager;
+  bool bannerLoaded = false;
+  @override
+  void initState() {
+    admobAdsManager = AdmobAdsManager();
+    admobAdsManager.loadBannerAd((val) {
+      setState(() {
+        bannerLoaded = val;
+      });
+    });
+    admobAdsManager.loadIntertitialAd();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    admobAdsManager.disposeBannerAd();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     PostModel post = Get.arguments["post"];
     return Scaffold(
+        bottomNavigationBar:
+            bannerLoaded ? admobAdsManager.getBannerAd() : const SizedBox(),
         appBar: AppBar(
           leading: Container(
             padding: EdgeInsets.all(6.r),

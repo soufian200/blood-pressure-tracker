@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
+// Unity Ads
 class AdsManager {
   static const bool isAdsEnabled = false;
   static const bool testMode = false;

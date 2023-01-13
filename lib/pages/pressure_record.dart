@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bptracker/Methods/get_sys_dia_status.dart';
 import 'package:bptracker/models/bp_status.dart';
+import 'package:bptracker/utils/admob_ads_manager.dart';
 import 'package:bptracker/utils/ads_manager.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_button.dart';
@@ -119,6 +120,27 @@ class _PressureRecordState extends State<PressureRecord> {
     Get.back(result: true);
   }
 
+  late AdmobAdsManager admobAdsManager;
+  bool bannerLoaded = false;
+
+  @override
+  void initState() {
+    admobAdsManager = AdmobAdsManager();
+    admobAdsManager.loadBannerAd((val) {
+      setState(() {
+        bannerLoaded = val;
+      });
+    });
+    admobAdsManager.loadIntertitialAd();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    admobAdsManager.disposeBannerAd();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,7 +193,13 @@ class _PressureRecordState extends State<PressureRecord> {
           Column(
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              /// Unity Ad Banner
               AdsManager.bannerAd(),
+
+              /// Admob ad baner
+              bannerLoaded ? admobAdsManager.getBannerAd() : const SizedBox(),
+
+              ///
               Icon(Icons.favorite, size: 200.sp, color: _crrbpStatus.color),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 22.w),

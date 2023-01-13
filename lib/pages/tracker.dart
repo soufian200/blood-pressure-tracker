@@ -14,6 +14,7 @@ class Tracker extends StatefulWidget {
 class _TrackerState extends State<Tracker> {
   ///
   final List<Widget> _tabs = [const BloodPressureTab(), const HeartRateTab()];
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

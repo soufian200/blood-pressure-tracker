@@ -4,6 +4,7 @@ import 'package:bptracker/pages/post_detail.dart';
 import 'package:bptracker/pages/posts.dart';
 import 'package:bptracker/pages/pressure_record.dart';
 import 'package:bptracker/pages/settings.dart';
+import 'package:bptracker/utils/admob_ads_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
@@ -11,6 +12,9 @@ import 'package:get/route_manager.dart';
 void main() {
   ///
   WidgetsFlutterBinding.ensureInitialized();
+
+  ///
+  AdmobAdsManager.admobInit();
 
   ///
   runApp(ScreenUtilInit(

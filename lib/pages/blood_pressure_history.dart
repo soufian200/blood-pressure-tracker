@@ -1,4 +1,5 @@
 import 'package:bptracker/models/pressure_record_model.dart';
+import 'package:bptracker/utils/admob_ads_manager.dart';
 import 'package:bptracker/utils/ads_manager.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_container.dart';
@@ -28,6 +29,10 @@ class _BloodPressureHistoryState extends State<BloodPressureHistory> {
     });
   }
 
+  ///
+  late AdmobAdsManager admobAdsManager;
+  bool bannerLoaded = false;
+
   @override
   void initState() {
     var monthlyData = Get.arguments["monthlyData"];
@@ -45,7 +50,21 @@ class _BloodPressureHistoryState extends State<BloodPressureHistory> {
       monthlyHistory = ddd;
     });
 
+    admobAdsManager = AdmobAdsManager();
+    admobAdsManager.loadBannerAd((val) {
+      setState(() {
+        bannerLoaded = val;
+      });
+    });
+    admobAdsManager.loadIntertitialAd();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    admobAdsManager.disposeBannerAd();
+    super.dispose();
   }
 
   @override
@@ -57,6 +76,8 @@ class _BloodPressureHistoryState extends State<BloodPressureHistory> {
         return true;
       },
       child: Scaffold(
+          bottomNavigationBar:
+              bannerLoaded ? admobAdsManager.getBannerAd() : const SizedBox(),
           appBar: AppBar(
             leading: Container(
               padding: EdgeInsets.all(6.r),

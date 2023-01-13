@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bptracker/Methods/get_sys_dia_status.dart';
 import 'package:bptracker/utils/Dialogs.dart';
 import 'package:bptracker/utils/Permissions.dart';
+import 'package:bptracker/utils/admob_ads_manager.dart';
 import 'package:bptracker/utils/colors.dart';
 import 'package:bptracker/widgets/app_card.dart';
 import 'package:bptracker/widgets/app_container.dart';
@@ -18,9 +19,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Settings extends StatelessWidget {
-  Settings({Key? key}) : super(key: key);
+class Settings extends StatefulWidget {
+  const Settings({Key? key}) : super(key: key);
 
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
   /// Export as excel File
   void _exportAsFile() async {
     /* Your blah blah code here */
@@ -36,7 +42,7 @@ class Settings extends StatelessWidget {
       print("No Sheet...");
       return;
     }
-    print("===============");
+    // print("===============");
     // Data cell =
     //     sheet1.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 1));
     // cell.value = "hellow world";
@@ -79,7 +85,6 @@ class Settings extends StatelessWidget {
       }
     }
 
-    print("ff");
     bool isYes = await Permissions.requestStorage();
     if (!isYes) {
       Dialogs.showOkAlertDialog(
@@ -100,11 +105,35 @@ class Settings extends StatelessWidget {
     ));
   }
 
-  String bundleId = "com.samlam.bp1";
+  // TODO: Change This To Your Package name
+  String bundleId = "com.yourOwn.bp";
+
+  ///
+  late AdmobAdsManager admobAdsManager;
+  bool bannerLoaded = false;
+  @override
+  void initState() {
+    admobAdsManager = AdmobAdsManager();
+    admobAdsManager.loadBannerAd((val) {
+      setState(() {
+        bannerLoaded = val;
+      });
+    });
+    admobAdsManager.loadIntertitialAd();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    admobAdsManager.disposeBannerAd();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        bottomNavigationBar:
+            bannerLoaded ? admobAdsManager.getBannerAd() : const SizedBox(),
         appBar: AppBar(
           toolbarHeight: 78.h,
           title: Text(
